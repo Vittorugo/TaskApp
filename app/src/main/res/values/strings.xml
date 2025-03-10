@@ -25,4 +25,10 @@
     <string name="txt_enviar">Enviar</string>
     <string name="txt_descricao">Descrição</string>
     <string name="txt_senha">Senha</string>
+
+    <!-- Home Logout -->
+    <string name="txt_title_dialog_confirm_logout">Deseja sair da sua conta ?</string>
+    <string name="txt_btn_dialog_confirm_logout">Confirmar</string>
+    <string name="txt_message_dialog_confirm_logout">Aperte confirmar para sair da sua conta.</string>
+
 </resources>
