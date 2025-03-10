@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.TaskApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/color_default</item>
+        <item name="android:windowBackground">@color/color_default</item>
+    </style>
+    
+    <style name="CustomTabLayout" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="EditTextTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:background">@drawable/background_edit_text</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/gray_100</item>
+    </style>
+
+    <style name="BottomTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:background">@drawable/background_btn</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/color_default</item>
+        <item name="android:textStyle">bold</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+    </style>
+
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+</resources>

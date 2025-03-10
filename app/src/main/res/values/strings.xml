@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">TaskApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="status_task_todo">A fazer</string>
+    <string name="status_task_doing">Fazendo</string>
+    <string name="status_task_done">Feitas</string>
+
+    <!-- Bottom Sheet -->
+    <string name="title_bottom_sheet">Atenção</string>
+    <string name="text_bottom_sheet">Entendi</string>
+    <string name="text_empty_fields">Preencha todos os campos</string>
+    <string name="text_error_email">Digite um e-mail válido</string>
+    <string name="text_error_pass">Digite uma senha</string>
+    <string name="text_accept_email">Email enviado com sucesso</string>
+    <string name="text_accept_register">Conta criada com sucesso</string>
+    <string name="text_accept_description">Tarefa criada com sucesso</string>
+    <string name="txt_bottom_login">Login</string>
+    <string name="txt_criar_conta">Criar Conta</string>
+    <string name="txt_esqueceu_senha">Esqueceu Senha</string>
+    <string name="txt_hint_digite_sua_senha">Digite sua senha</string>
+    <string name="txt_hint_digite_seu_e_mail">Digite seu e-mail</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_salvar">salvar</string>
+    <string name="txt_enviar">Enviar</string>
+    <string name="txt_descricao">Descrição</string>
+    <string name="txt_senha">Senha</string>
+</resources>

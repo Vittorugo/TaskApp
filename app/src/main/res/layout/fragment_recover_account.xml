@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.auth.RecoverAccountFragment"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_default">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_back">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recuperar Conta"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"/>
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Informe seu e-mail para que um link \n de recuperação de senha seja enviado."
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                android:textAlignment="center"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_email"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                android:layout_marginTop="24dp"
+                />
+
+            <EditText
+                android:id="@+id/editEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_hint_digite_seu_e_mail"
+                android:inputType="textEmailAddress"
+                style="@style/EditTextTheme"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRecover"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                style="@style/BottomTheme"
+                android:text="@string/txt_enviar" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:indeterminateTint="@color/white"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
