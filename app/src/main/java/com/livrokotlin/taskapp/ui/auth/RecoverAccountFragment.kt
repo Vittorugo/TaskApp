@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.databinding.FragmentRecoverAccountBinding
 import com.livrokotlin.taskapp.extensions.initToolbar
@@ -45,9 +48,24 @@ class RecoverAccountFragment : Fragment() {
         val email = binding.editEmail.text.toString().trim()
 
         if (email.isNotBlank())
-            showBottomSheet(message = getString(R.string.text_accept_email))
+            recoverAccount(email)
         else
             showBottomSheet(message = getString(R.string.text_error_email))
+    }
+
+    private fun recoverAccount(email: String) {
+        Firebase.auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                binding.progressBar.isVisible = true
+                if (task.isSuccessful) {
+                    showBottomSheet(message = getString(R.string.txt_recover_account), onClick = {
+                        binding.progressBar.isVisible = false
+                    })
+                } else {
+                    Toast.makeText(requireContext(), task.exception?.message, Toast.LENGTH_SHORT).show()
+                    binding.progressBar.isVisible = false
+                }
+            }
     }
 
     override fun onDestroy() {
