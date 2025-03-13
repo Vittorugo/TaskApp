@@ -25,7 +25,7 @@ class FormTaskFragment : Fragment() {
     private var _binding: FragmentFormTaskBinding? = null
     private val binding get() = _binding!!
     private lateinit var task: Task
-    private lateinit var status: Status
+    private var status: Status = Status.TODO
     private var newTask: Boolean = true
 
     private lateinit var reference: DatabaseReference
