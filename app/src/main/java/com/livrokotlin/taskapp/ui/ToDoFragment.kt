@@ -8,6 +8,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
@@ -21,6 +29,9 @@ class ToDoFragment : Fragment() {
 
     private lateinit var taskAdapter: TaskAdapter
 
+    private lateinit var reference: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,9 +43,12 @@ class ToDoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        reference = Firebase.database.reference
+        auth = Firebase.auth
+
         addNewTask()
         initRecyclerViewTask()
-        taskAdapter.submitList(getTasks())
+        getTasks()
     }
 
     private fun initRecyclerViewTask() {
@@ -76,12 +90,27 @@ class ToDoFragment : Fragment() {
             }
         }
     }
-    private fun getTasks() = listOf(
-        Task("01", "Estudar Android", Status.TODO),
-        Task("02", "Estudar Kotlin", Status.TODO),
-        Task("03", "Estudar Room", Status.TODO),
-        Task("04", "Estudar Firebase", Status.TODO)
-    )
+
+    private fun getTasks() {
+        reference
+            .child("tasks")
+            .child(auth.currentUser?.uid ?: "")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var tasks = mutableListOf<Task>()
+                    for ( dataSnapshot in snapshot.children) {
+                        val task = dataSnapshot.getValue(Task::class.java) as Task
+                        if(task.status == Status.TODO)
+                            tasks.add(task)
+                    }
+                    taskAdapter.submitList(tasks)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Erro ao buscar tarefas", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
 
     private fun addNewTask() {
         binding.floatingActionButton.setOnClickListener {
