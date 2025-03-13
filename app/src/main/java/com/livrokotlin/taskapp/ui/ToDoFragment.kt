@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Firebase
@@ -103,13 +104,26 @@ class ToDoFragment : Fragment() {
                         if(task.status == Status.TODO)
                             tasks.add(task)
                     }
+
+                    binding.progressBar.isVisible = false
+                    listTaskEmpty(tasks)
+
                     taskAdapter.submitList(tasks)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    binding.progressBar.isVisible = false
                     Toast.makeText(requireContext(), "Erro ao buscar tarefas", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    private fun listTaskEmpty(tasks: List<Task>) {
+        binding.txtLoading.text = if(tasks.isEmpty()) {
+            getString(R.string.txt_task_list_empty)
+        } else {
+            ""
+        }
     }
 
     private fun addNewTask() {
