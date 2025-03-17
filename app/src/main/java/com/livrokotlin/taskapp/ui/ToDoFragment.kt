@@ -21,6 +21,7 @@ import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
 import com.livrokotlin.taskapp.databinding.FragmentToDoBinding
+import com.livrokotlin.taskapp.extensions.showBottomSheet
 import com.livrokotlin.taskapp.ui.adapter.TaskAdapter
 
 class ToDoFragment : Fragment() {
@@ -75,7 +76,14 @@ class ToDoFragment : Fragment() {
     private fun optionSelected(task: Task, option: Int) {
         when (option) {
             TaskAdapter.SELECT_REMOVE -> {
-                Toast.makeText(requireContext(), "Removendo ${task.description}", Toast.LENGTH_SHORT).show()
+                showBottomSheet(
+                    title = R.string.txt_delete_task,
+                    textBottom = R.string.txt_confirm,
+                    message = getString(R.string.txt_warning_delete_task),
+                    onClick = {
+                        deleteTask(task)
+                    }
+                )
             }
 
             TaskAdapter.SELECT_EDIT -> {
@@ -108,6 +116,7 @@ class ToDoFragment : Fragment() {
                     binding.progressBar.isVisible = false
                     listTaskEmpty(tasks)
 
+                    tasks.reverse()
                     taskAdapter.submitList(tasks)
                 }
 
@@ -116,6 +125,20 @@ class ToDoFragment : Fragment() {
                     Toast.makeText(requireContext(), "Erro ao buscar tarefas", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    private fun deleteTask(task: Task) {
+        reference
+            .child("tasks")
+            .child(auth.currentUser?.uid ?: "")
+            .child(task.id)
+            .removeValue().addOnCompleteListener { result ->
+                if(result.isSuccessful) {
+                    Toast.makeText(requireContext(), "Tarefa removida com sucesso", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Erro ao remover tarefa", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun listTaskEmpty(tasks: List<Task>) {

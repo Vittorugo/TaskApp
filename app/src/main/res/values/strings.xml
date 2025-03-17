@@ -25,6 +25,7 @@
     <string name="txt_enviar">Enviar</string>
     <string name="txt_descricao">Descrição</string>
     <string name="txt_senha">Senha</string>
+    <string name="txt_confirm">Confirmar</string>
 
     <!-- Recover Account -->
     <string name="txt_recover_account">Um link para recuperação de senha foi enviado para o email.</string>
@@ -37,4 +38,6 @@
     <!-- Generic -->
     <string name="txt_task_list_empty">Nenhuma tarefa cadastrada</string>
     <string name="txt_load_task_list_empty">Aguarde, estamos carregando as tarefas...</string>
+    <string name="txt_delete_task">Deseja remover esta tarefa ?</string>">
+    <string name="txt_warning_delete_task">Aperte em confirmar para remover essa tarefa.</string>">
 </resources>
