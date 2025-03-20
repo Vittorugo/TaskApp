@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
@@ -27,6 +28,7 @@ class FormTaskFragment : Fragment() {
     private lateinit var task: Task
     private var status: Status = Status.TODO
     private var newTask: Boolean = true
+    private val args: FormTaskFragmentArgs by navArgs()
 
     private lateinit var reference: DatabaseReference
 
@@ -46,7 +48,7 @@ class FormTaskFragment : Fragment() {
 
         // Intercepta o botão de voltar do dispositivo
         interceptBackPressed(R.id.action_formTaskFragment_to_homeFragment)
-
+        getArgs()
         initListeners()
     }
 
@@ -100,6 +102,33 @@ class FormTaskFragment : Fragment() {
                 }
 
             }
+    }
+
+    private fun getArgs() {
+        args.task.let {
+            if (it != null) {
+                this.task = it
+                configTask()
+            }
+        }
+    }
+
+    private fun configTask() {
+        newTask = false
+        status = task.status
+        binding.textToolbar.setText(R.string.text_edit_task_toolbar)
+        binding.editDescription.setText(task.description)
+        setStatus()
+    }
+
+    private fun setStatus() {
+        val id = when(task.status) {
+            Status.TODO -> R.id.rbTodo
+            Status.DOING -> R.id.rbDoing
+            else -> R.id.rbDone
+        }
+
+        binding.rgStatus.check(id)
     }
 
     override fun onDestroy() {
