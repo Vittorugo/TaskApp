@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.Firebase
@@ -14,6 +14,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import com.livrokotlin.taskapp.R
+import com.livrokotlin.taskapp.TaskViewModel
 import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
 import com.livrokotlin.taskapp.databinding.FragmentFormTaskBinding
@@ -29,6 +30,7 @@ class FormTaskFragment : Fragment() {
     private var status: Status = Status.TODO
     private var newTask: Boolean = true
     private val args: FormTaskFragmentArgs by navArgs()
+    private val viewModel: TaskViewModel by activityViewModels()
 
     private lateinit var reference: DatabaseReference
 
@@ -72,8 +74,10 @@ class FormTaskFragment : Fragment() {
         if (description.isNotEmpty()) {
             binding.progressBar.isVisible = true
 
-            if (newTask) task = Task()
-            task.id  = reference.push().key ?: ""
+            if (newTask)  {
+                task = Task()
+                task.id  = reference.push().key ?: ""
+            }
             task.description = description
             task.status = status
 
@@ -94,6 +98,7 @@ class FormTaskFragment : Fragment() {
                     if (newTask) {
                         findNavController().popBackStack()
                     } else {
+                        viewModel.setUpdateTask(task)
                         binding.progressBar.isVisible = false
                     }
                 } else {

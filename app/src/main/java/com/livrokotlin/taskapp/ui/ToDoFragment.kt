@@ -1,12 +1,14 @@
 package com.livrokotlin.taskapp.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Firebase
@@ -18,6 +20,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.livrokotlin.taskapp.R
+import com.livrokotlin.taskapp.TaskViewModel
 import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
 import com.livrokotlin.taskapp.databinding.FragmentToDoBinding
@@ -33,6 +36,8 @@ class ToDoFragment : Fragment() {
 
     private lateinit var reference: DatabaseReference
     private lateinit var auth: FirebaseAuth
+
+    private val viewModel: TaskViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -154,6 +159,33 @@ class ToDoFragment : Fragment() {
         binding.floatingActionButton.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToFormTaskFragment(null)
             findNavController().navigate(action)
+        }
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        Log.i("TAG", "observeViewModel")
+        viewModel.taskUpdate.observe(viewLifecycleOwner) { updateTask ->
+            if(updateTask.status == Status.TODO) {
+
+                // Armazena a lista atual do adapter
+                val oldList = taskAdapter.currentList
+
+                // Gera uma nova lista a partir da lista antiga já com a tarefa atualizada
+                val newList = oldList.toMutableList().apply {
+                    find { it.id == updateTask.id }?.description = updateTask.description
+                }
+
+                // Armazena a posição da tarefa a ser atualziada na lista
+                val position = oldList.indexOfFirst { it.id == updateTask.id }
+
+                // Envia a lista atualizada para o adapter
+                taskAdapter.submitList(newList)
+
+                // Atualiza a tarefa pela posição do adapter
+                taskAdapter.notifyItemChanged(position)
+            }
         }
     }
 

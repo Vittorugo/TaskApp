@@ -14,7 +14,7 @@
     <string name="text_error_pass">Digite uma senha</string>
     <string name="text_accept_email">Email enviado com sucesso</string>
     <string name="text_accept_register">Conta criada com sucesso</string>
-    <string name="text_accept_description">Tarefa criada com sucesso</string>
+    <string name="text_accept_description">Tarefa salva com sucesso</string>
     <string name="text_edit_task_success">Tarefa editada com sucesso</string>
     <string name="text_edit_task_toolbar">Editando Tarefa</string>">
     <string name="txt_bottom_login">Login</string>
