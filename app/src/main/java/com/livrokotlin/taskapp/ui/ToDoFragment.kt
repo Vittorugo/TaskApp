@@ -11,21 +11,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.TaskViewModel
 import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
 import com.livrokotlin.taskapp.databinding.FragmentToDoBinding
-import com.livrokotlin.taskapp.extensions.showBottomSheet
 import com.livrokotlin.taskapp.ui.adapter.TaskAdapter
+import com.livrokotlin.taskapp.util.FirebaseHelper
+import com.livrokotlin.taskapp.util.showBottomSheet
 
 class ToDoFragment : Fragment() {
 
@@ -33,9 +31,6 @@ class ToDoFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var taskAdapter: TaskAdapter
-
-    private lateinit var reference: DatabaseReference
-    private lateinit var auth: FirebaseAuth
 
     private val viewModel: TaskViewModel by activityViewModels()
 
@@ -49,9 +44,6 @@ class ToDoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        reference = Firebase.database.reference
-        auth = Firebase.auth
 
         addNewTask()
         initRecyclerViewTask()
@@ -107,9 +99,9 @@ class ToDoFragment : Fragment() {
     }
 
     private fun getTasks() {
-        reference
+        FirebaseHelper.getDatabase()
             .child("tasks")
-            .child(auth.currentUser?.uid ?: "")
+            .child(FirebaseHelper.getIdUser())
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var tasks = mutableListOf<Task>()
@@ -134,9 +126,9 @@ class ToDoFragment : Fragment() {
     }
 
     private fun deleteTask(task: Task) {
-        reference
+        FirebaseHelper.getDatabase()
             .child("tasks")
-            .child(auth.currentUser?.uid ?: "")
+            .child(FirebaseHelper.getIdUser())
             .child(task.id)
             .removeValue().addOnCompleteListener { result ->
                 if(result.isSuccessful) {

@@ -18,9 +18,10 @@ import com.livrokotlin.taskapp.TaskViewModel
 import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
 import com.livrokotlin.taskapp.databinding.FragmentFormTaskBinding
-import com.livrokotlin.taskapp.extensions.initToolbar
-import com.livrokotlin.taskapp.extensions.interceptBackPressed
-import com.livrokotlin.taskapp.extensions.showBottomSheet
+import com.livrokotlin.taskapp.util.FirebaseHelper
+import com.livrokotlin.taskapp.util.initToolbar
+import com.livrokotlin.taskapp.util.interceptBackPressed
+import com.livrokotlin.taskapp.util.showBottomSheet
 
 class FormTaskFragment : Fragment() {
 
@@ -31,8 +32,6 @@ class FormTaskFragment : Fragment() {
     private var newTask: Boolean = true
     private val args: FormTaskFragmentArgs by navArgs()
     private val viewModel: TaskViewModel by activityViewModels()
-
-    private lateinit var reference: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +45,6 @@ class FormTaskFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initToolbar(binding.toolbar)
-        reference = Firebase.database.reference
 
         // Intercepta o botão de voltar do dispositivo
         interceptBackPressed(R.id.action_formTaskFragment_to_homeFragment)
@@ -76,7 +74,6 @@ class FormTaskFragment : Fragment() {
 
             if (newTask)  {
                 task = Task()
-                task.id  = reference.push().key ?: ""
             }
             task.description = description
             task.status = status
@@ -87,9 +84,9 @@ class FormTaskFragment : Fragment() {
     }
 
     private fun salveTask(task: Task) {
-        reference
+        FirebaseHelper.getDatabase()
             .child("tasks")
-            .child(Firebase.auth.currentUser?.uid ?: "")
+            .child(FirebaseHelper.getIdUser())
             .child(task.id)
             .setValue(task).addOnCompleteListener { result ->
                 if (result.isSuccessful) {

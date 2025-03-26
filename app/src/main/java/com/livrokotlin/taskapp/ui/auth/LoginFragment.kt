@@ -1,6 +1,7 @@
 package com.livrokotlin.taskapp.ui.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,12 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.databinding.FragmentLoginBinding
-import com.livrokotlin.taskapp.extensions.showBottomSheet
+import com.livrokotlin.taskapp.util.FirebaseHelper
+import com.livrokotlin.taskapp.util.showBottomSheet
 
 class LoginFragment : Fragment() {
 
@@ -69,8 +69,11 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     findNavController().navigate(R.id.action_loginFragment2_to_homeFragment)
                 } else {
+                    Log.i("TAG", "Login error: ${task.exception?.message}")
                     binding.progressBar.isVisible = false
-                    Toast.makeText(requireContext(), task.exception?.message, Toast.LENGTH_SHORT).show()
+                    showBottomSheet(
+                        message = getString(FirebaseHelper.validError(task.exception?.message.toString()))
+                    )
                 }
             }
     }

@@ -1,4 +1,4 @@
-package com.livrokotlin.taskapp.extensions
+package com.livrokotlin.taskapp.util
 
 import android.util.Log
 import androidx.activity.OnBackPressedCallback

@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.databinding.FragmentHomeBinding
-import com.livrokotlin.taskapp.extensions.showBottomSheet
+import com.livrokotlin.taskapp.util.showBottomSheet
 import com.livrokotlin.taskapp.ui.adapter.ViewPagerAdapter
 
 class HomeFragment : Fragment() {

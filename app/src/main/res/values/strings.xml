@@ -39,7 +39,17 @@
 
     <!-- Generic -->
     <string name="txt_task_list_empty">Nenhuma tarefa cadastrada</string>
-    <string name="txt_load_task_list_empty">Aguarde, estamos carregando as tarefas...</string>
+    <string name="txt_load_task_list_empty">Aguarde, estamos carregando as tarefas…</string>
     <string name="txt_delete_task">Deseja remover esta tarefa ?</string>">
     <string name="txt_warning_delete_task">Aperte em confirmar para remover essa tarefa.</string>">
+    <string name="error_generic">Ocorreu um erro! Por favor tente novamente mais tarde.</string>
+
+    <!-- Auth Firebase-->
+    <string name="account_not_registered_register_fragment">Nenhuma conta encontrada com este email.</string>
+    <string name="invalid_email_register_fragment">Insira um email válido</string>
+    <string name="invalid_password_register_fragment">Senha inválida, tente novamente.</string>
+    <string name="email_in_use_register_fragment">Este email já está em uso.</string>
+    <string name="strong_password_register_fragment">Insira uma senha mais forte.</string>
+
+
 </resources>

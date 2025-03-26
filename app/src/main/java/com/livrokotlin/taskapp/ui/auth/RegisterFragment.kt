@@ -13,9 +13,10 @@ import com.google.firebase.auth.auth
 import com.google.firebase.Firebase
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.databinding.FragmentRegisterBinding
-import com.livrokotlin.taskapp.extensions.initToolbar
-import com.livrokotlin.taskapp.extensions.interceptBackPressed
-import com.livrokotlin.taskapp.extensions.showBottomSheet
+import com.livrokotlin.taskapp.util.FirebaseHelper
+import com.livrokotlin.taskapp.util.initToolbar
+import com.livrokotlin.taskapp.util.interceptBackPressed
+import com.livrokotlin.taskapp.util.showBottomSheet
 
 class RegisterFragment : Fragment() {
 
@@ -71,10 +72,9 @@ class RegisterFragment : Fragment() {
                     findNavController().navigate(R.id.action_loginFragment2_to_homeFragment)
                 } else {
                     binding.progressBar.isVisible = false
-                    Toast.makeText(requireContext(),
-                        task.exception?.message,
-                        Toast.LENGTH_SHORT)
-                        .show()
+                    showBottomSheet(
+                        message = getString(FirebaseHelper.validError(task.exception?.message.toString()))
+                    )
                 }
 
             }

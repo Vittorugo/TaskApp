@@ -11,9 +11,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.databinding.FragmentRecoverAccountBinding
-import com.livrokotlin.taskapp.extensions.initToolbar
-import com.livrokotlin.taskapp.extensions.interceptBackPressed
-import com.livrokotlin.taskapp.extensions.showBottomSheet
+import com.livrokotlin.taskapp.util.FirebaseHelper
+import com.livrokotlin.taskapp.util.initToolbar
+import com.livrokotlin.taskapp.util.interceptBackPressed
+import com.livrokotlin.taskapp.util.showBottomSheet
 
 class RecoverAccountFragment : Fragment() {
     private var _binding: FragmentRecoverAccountBinding? = null
@@ -62,7 +63,9 @@ class RecoverAccountFragment : Fragment() {
                         binding.progressBar.isVisible = false
                     })
                 } else {
-                    Toast.makeText(requireContext(), task.exception?.message, Toast.LENGTH_SHORT).show()
+                    showBottomSheet(
+                        message = getString(FirebaseHelper.validError(task.exception?.message.toString()))
+                    )
                     binding.progressBar.isVisible = false
                 }
             }
