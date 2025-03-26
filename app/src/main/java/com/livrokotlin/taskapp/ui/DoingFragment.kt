@@ -2,11 +2,11 @@ package com.livrokotlin.taskapp.ui
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -62,7 +62,8 @@ class DoingFragment : Fragment() {
     private fun optionSelected(task: Task, option: Int) {
         when (option) {
             TaskAdapter.SELECT_BACK -> {
-                Toast.makeText(requireContext(), "Voltando ${task.description}", Toast.LENGTH_SHORT).show()
+                task.status = Status.TODO
+                updateTask(task)
             }
 
             TaskAdapter.SELECT_REMOVE -> {
@@ -87,14 +88,15 @@ class DoingFragment : Fragment() {
             }
 
             TaskAdapter.SELECT_NEXT -> {
-                Toast.makeText(requireContext(), "Próxima ${task.description}", Toast.LENGTH_SHORT).show()
+                task.status = Status.DONE
+                updateTask(task)
             }
         }
     }
 
     private fun getTasks() {
         FirebaseHelper.getDatabase()
-            .child("tasks")
+            .child(FirebaseHelper.DATABASE_NAME)
             .child(FirebaseHelper.getIdUser())
             .addValueEventListener(object : ValueEventListener { // Esta linha anexa um ValueEventListener à referência do banco de dados. Um ValueEventListener escuta as mudanças nos dados no local especificado e aciona o método onDataChange sempre que ocorrem mudanças
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -133,7 +135,7 @@ class DoingFragment : Fragment() {
 
     private fun deleteTask(task: Task) {
         FirebaseHelper.getDatabase()
-            .child("tasks")
+            .child(FirebaseHelper.DATABASE_NAME)
             .child(FirebaseHelper.getIdUser())
             .child(task.id)
             .removeValue().addOnCompleteListener { result ->
@@ -147,7 +149,6 @@ class DoingFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        Log.i("TAG", "observeViewModel")
         viewModel.taskUpdate.observe(viewLifecycleOwner) { updateTask ->
             if(updateTask.status == Status.TODO) {
 
@@ -169,6 +170,21 @@ class DoingFragment : Fragment() {
                 taskAdapter.notifyItemChanged(position)
             }
         }
+    }
+
+    private fun updateTask(task: Task) {
+        FirebaseHelper.getDatabase()
+            .child(FirebaseHelper.DATABASE_NAME)
+            .child(FirebaseHelper.getIdUser())
+            .child(task.id)
+            .setValue(task)
+            .addOnCompleteListener { result ->
+                if (result.isSuccessful) {
+                    Toast.makeText(requireContext(), "Tarefa atualizada com sucesso!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Erro ao atualizar tarefa!", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     override fun onDestroy() {

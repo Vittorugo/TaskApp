@@ -8,7 +8,7 @@ import com.livrokotlin.taskapp.R
 class FirebaseHelper {
 
     companion object {
-
+        val DATABASE_NAME = "tasks"
         fun getDatabase() = Firebase.database.reference
         fun getAuth() = FirebaseAuth.getInstance()
         fun getIdUser() = getAuth().currentUser?.uid ?: ""
