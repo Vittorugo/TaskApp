@@ -113,8 +113,7 @@ class DoneFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Erro ao buscar tarefas", Toast.LENGTH_SHORT)
-                        .show()
+                    TODO("Not yet implemented")
                 }
             })
     }

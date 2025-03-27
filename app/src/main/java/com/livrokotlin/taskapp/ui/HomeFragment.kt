@@ -14,12 +14,12 @@ import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.databinding.FragmentHomeBinding
 import com.livrokotlin.taskapp.util.showBottomSheet
 import com.livrokotlin.taskapp.ui.adapter.ViewPagerAdapter
+import com.livrokotlin.taskapp.util.FirebaseHelper
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +31,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = Firebase.auth
 
         initTabs()
         logout()
@@ -61,7 +60,7 @@ class HomeFragment : Fragment() {
                 textBottom = R.string.txt_btn_dialog_confirm_logout,
                 message = getString(R.string.txt_message_dialog_confirm_logout),
                 onClick = {
-                    auth.signOut()
+                    FirebaseHelper.getAuth().signOut()
                     findNavController().navigate(R.id.action_homeFragment_to_authentication)
                 }
             )

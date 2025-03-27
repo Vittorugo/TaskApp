@@ -1,7 +1,6 @@
 package com.livrokotlin.taskapp.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -114,9 +113,8 @@ class DoingFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Erro ao buscar tarefas", Toast.LENGTH_SHORT).show()
+                    TODO("Not yet implemented")
                 }
-
             })
     }
 
