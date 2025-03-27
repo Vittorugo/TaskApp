@@ -44,6 +44,7 @@ class DoingFragment : Fragment() {
 
         initRecyclerViewTask()
         getTasks()
+        observeViewModel()
     }
 
     private fun initRecyclerViewTask() {
@@ -80,7 +81,6 @@ class DoingFragment : Fragment() {
             TaskAdapter.SELECT_EDIT -> {
                 var action = HomeFragmentDirections.actionHomeFragmentToFormTaskFragment(task)
                 findNavController().navigate(action)
-                observeViewModel()
             }
 
             TaskAdapter.SELECT_DETAILS -> {
@@ -150,7 +150,7 @@ class DoingFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.taskUpdate.observe(viewLifecycleOwner) { updateTask ->
-            if(updateTask.status == Status.TODO) {
+            if(updateTask.status == Status.DOING) {
 
                 // Armazena a lista atual do adapter
                 val oldList = taskAdapter.currentList
