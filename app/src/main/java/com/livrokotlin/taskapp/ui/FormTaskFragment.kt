@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -54,6 +55,7 @@ class FormTaskFragment : BaseFragment() {
 
     private fun initListeners() {
         binding.btnSalvar.setOnClickListener {
+            observeViewModel()
             validateForm()
         }
 
@@ -79,32 +81,14 @@ class FormTaskFragment : BaseFragment() {
             task.description = description
             task.status = status
 
-            salveTask(task)
+            if (newTask) {
+                viewModel.insertTask(task)
+            } else {
+                //viewModel.updateTask(task)
+            }
+
         } else
             showBottomSheet(message = getString(R.string.text_empty_fields))
-    }
-
-    private fun salveTask(task: Task) {
-        FirebaseHelper.getDatabase()
-            .child(FirebaseHelper.DATABASE_NAME)
-            .child(FirebaseHelper.getIdUser())
-            .child(task.id)
-            .setValue(task).addOnCompleteListener { result ->
-                if (result.isSuccessful) {
-                    showBottomSheet(message = getString(R.string.text_accept_description))
-
-                    if (newTask) {
-                        findNavController().popBackStack()
-                    } else {
-                        viewModel.setUpdateTask(task)
-                        binding.progressBar.isVisible = false
-                    }
-                } else {
-                    binding.progressBar.isVisible = false
-                    showBottomSheet(message = "Erro ao salvar tarefa")
-                }
-
-            }
     }
 
     private fun getArgs() {
@@ -132,6 +116,16 @@ class FormTaskFragment : BaseFragment() {
         }
 
         binding.rgStatus.check(id)
+    }
+
+    private fun observeViewModel() {
+        viewModel.taskInsert.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(),
+                R.string.text_accept_description,
+                Toast.LENGTH_SHORT).show()
+
+            findNavController().popBackStack()
+        }
     }
 
     override fun onDestroy() {

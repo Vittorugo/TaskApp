@@ -101,7 +101,7 @@ class ToDoFragment : Fragment() {
         FirebaseHelper.getDatabase()
             .child(FirebaseHelper.DATABASE_NAME)
             .child(FirebaseHelper.getIdUser())
-            .addValueEventListener(object : ValueEventListener {
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var tasks = mutableListOf<Task>()
                     Log.d("FirebaseData", "Snapshot: ${snapshot.value}")
@@ -157,6 +157,20 @@ class ToDoFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        viewModel.taskInsert.observe(viewLifecycleOwner) { task ->
+            if(task.status == Status.TODO) {
+                val oldList = taskAdapter.currentList
+
+                val newList = oldList.toMutableList().apply {
+                    add(0, task)
+                }
+
+                taskAdapter.submitList(newList)
+
+                // Quando voltar para tela do 'TO DO' a lista do recyclerView volta para o topo
+                binding.rvTasks.smoothScrollToPosition(0)
+            }
+        }
         viewModel.taskUpdate.observe(viewLifecycleOwner) { updateTask ->
             if(updateTask.status == Status.TODO) {
 
