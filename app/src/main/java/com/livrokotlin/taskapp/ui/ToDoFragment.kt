@@ -1,7 +1,6 @@
 package com.livrokotlin.taskapp.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.TaskViewModel
 import com.livrokotlin.taskapp.data.model.Status
@@ -69,6 +65,7 @@ class ToDoFragment : Fragment() {
 //        binding.rvTasks.setHasFixedSize(true)
 //        binding.rvTasks.adapter = taskAdapter
     }
+
     private fun optionSelected(task: Task, option: Int) {
         when (option) {
             TaskAdapter.SELECT_REMOVE -> {
@@ -93,7 +90,7 @@ class ToDoFragment : Fragment() {
 
             TaskAdapter.SELECT_NEXT -> {
                 task.status = Status.DOING
-                updateTask(task)
+                viewModel.updateTask(task)
             }
         }
     }
@@ -153,41 +150,29 @@ class ToDoFragment : Fragment() {
         }
 
         viewModel.taskUpdate.observe(viewLifecycleOwner) { updateTask ->
-            if(updateTask.status == Status.TODO) {
+            // Armazena a lista atual do adapter
+            val oldList = taskAdapter.currentList
 
-                // Armazena a lista atual do adapter
-                val oldList = taskAdapter.currentList
-
-                // Gera uma nova lista a partir da lista antiga já com a tarefa atualizada
-                val newList = oldList.toMutableList().apply {
+            // Gera uma nova lista a partir da lista antiga já com a tarefa atualizada
+            val newList = oldList.toMutableList().apply {
+                // Condição para validar se o usuario alterou apenas a descrição da tarefa ou o status tbm.
+                // Caso tenha alterado o status, remove a tarefa da lista
+                if(updateTask.status == Status.TODO) {
                     find { it.id == updateTask.id }?.description = updateTask.description
-                }
-
-                // Armazena a posição da tarefa a ser atualziada na lista
-                val position = oldList.indexOfFirst { it.id == updateTask.id }
-
-                // Envia a lista atualizada para o adapter
-                taskAdapter.submitList(newList)
-
-                // Atualiza a tarefa pela posição do adapter
-                taskAdapter.notifyItemChanged(position)
-            }
-        }
-    }
-
-    private fun updateTask(task: Task) {
-        FirebaseHelper.getDatabase()
-            .child(FirebaseHelper.DATABASE_NAME)
-            .child(FirebaseHelper.getIdUser())
-            .child(task.id)
-            .setValue(task)
-            .addOnCompleteListener { result ->
-                if (result.isSuccessful) {
-                    Toast.makeText(requireContext(), "Tarefa atualizada com sucesso!", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "Erro ao atualizar tarefa!", Toast.LENGTH_SHORT).show()
+                    remove(updateTask)
                 }
             }
+
+            // Armazena a posição da tarefa a ser atualziada na lista
+            val position = oldList.indexOfFirst { it.id == updateTask.id }
+
+            // Envia a lista atualizada para o adapter
+            taskAdapter.submitList(newList)
+
+            // Atualiza a tarefa pela posição do adapter
+            taskAdapter.notifyItemChanged(position)
+        }
     }
 
     override fun onDestroy() {

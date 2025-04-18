@@ -6,20 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
 import com.livrokotlin.taskapp.R
 import com.livrokotlin.taskapp.TaskViewModel
 import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
 import com.livrokotlin.taskapp.databinding.FragmentFormTaskBinding
-import com.livrokotlin.taskapp.util.FirebaseHelper
 import com.livrokotlin.taskapp.util.initToolbar
 import com.livrokotlin.taskapp.util.interceptBackPressed
 import com.livrokotlin.taskapp.util.showBottomSheet
@@ -84,7 +78,7 @@ class FormTaskFragment : BaseFragment() {
             if (newTask) {
                 viewModel.insertTask(task)
             } else {
-                //viewModel.updateTask(task)
+                viewModel.updateTask(task)
             }
 
         } else
@@ -125,6 +119,14 @@ class FormTaskFragment : BaseFragment() {
                 Toast.LENGTH_SHORT).show()
 
             findNavController().popBackStack()
+        }
+
+        viewModel.taskUpdate.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(),
+                R.string.text_edit_task_success,
+                Toast.LENGTH_SHORT).show()
+
+            binding.progressBar.isVisible = false
         }
     }
 
