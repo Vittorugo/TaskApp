@@ -45,7 +45,8 @@ class ToDoFragment : Fragment() {
 
         addNewTask()
         initRecyclerViewTask()
-        getTasks()
+        observeViewModel()
+        viewModel.getTasks(Status.TODO)
     }
 
     private fun initRecyclerViewTask() {
@@ -97,34 +98,6 @@ class ToDoFragment : Fragment() {
         }
     }
 
-    private fun getTasks() {
-        FirebaseHelper.getDatabase()
-            .child(FirebaseHelper.DATABASE_NAME)
-            .child(FirebaseHelper.getIdUser())
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    var tasks = mutableListOf<Task>()
-                    Log.d("FirebaseData", "Snapshot: ${snapshot.value}")
-                    for ( dataSnapshot in snapshot.children) {
-                        Log.d("FirebaseData", "DataSnapshot: ${dataSnapshot.getValue(Task::class.java) as Task}")
-                        val task = dataSnapshot.getValue(Task::class.java) as Task
-                        if(task.status == Status.TODO)
-                            tasks.add(task)
-                    }
-
-                    binding.progressBar.isVisible = false
-                    listTaskEmpty(tasks)
-
-                    tasks.reverse()
-                    taskAdapter.submitList(tasks)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-    }
-
     private fun deleteTask(task: Task) {
         FirebaseHelper.getDatabase()
             .child(FirebaseHelper.DATABASE_NAME)
@@ -157,6 +130,13 @@ class ToDoFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        viewModel.taskList.observe(viewLifecycleOwner) { tasks ->
+            binding.progressBar.isVisible = false
+            listTaskEmpty(tasks)
+
+            taskAdapter.submitList(tasks)
+        }
+
         viewModel.taskInsert.observe(viewLifecycleOwner) { task ->
             if(task.status == Status.TODO) {
                 val oldList = taskAdapter.currentList
@@ -171,6 +151,7 @@ class ToDoFragment : Fragment() {
                 binding.rvTasks.smoothScrollToPosition(0)
             }
         }
+
         viewModel.taskUpdate.observe(viewLifecycleOwner) { updateTask ->
             if(updateTask.status == Status.TODO) {
 
