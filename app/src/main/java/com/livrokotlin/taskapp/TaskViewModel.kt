@@ -1,7 +1,6 @@
 package com.livrokotlin.taskapp
 
 import android.util.Log
-import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,6 +21,9 @@ class TaskViewModel : ViewModel() {
 
     private val _taskUpdate = MutableLiveData<Task>()
     val taskUpdate: LiveData<Task> = _taskUpdate
+
+    private val _taskDelete = MutableLiveData<Task>()
+    val taskDelete: LiveData<Task> = _taskDelete
 
     fun getTasks(status: Status) {
         FirebaseHelper.getDatabase()
@@ -74,6 +76,18 @@ class TaskViewModel : ViewModel() {
             .updateChildren(map).addOnCompleteListener { result ->
                 if (result.isSuccessful) {
                     _taskUpdate.postValue(task)
+                }
+            }
+    }
+
+    fun deleteTask(task: Task) {
+        FirebaseHelper.getDatabase()
+            .child(FirebaseHelper.DATABASE_NAME)
+            .child(FirebaseHelper.getIdUser())
+            .child(task.id)
+            .removeValue().addOnCompleteListener { result ->
+                if(result.isSuccessful) {
+                    _taskDelete.postValue(task)
                 }
             }
     }

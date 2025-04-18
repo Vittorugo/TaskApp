@@ -74,7 +74,7 @@ class ToDoFragment : Fragment() {
                     textBottom = R.string.txt_confirm,
                     message = getString(R.string.txt_warning_delete_task),
                     onClick = {
-                        deleteTask(task)
+                        viewModel.deleteTask(task)
                     }
                 )
             }
@@ -93,20 +93,6 @@ class ToDoFragment : Fragment() {
                 viewModel.updateTask(task)
             }
         }
-    }
-
-    private fun deleteTask(task: Task) {
-        FirebaseHelper.getDatabase()
-            .child(FirebaseHelper.DATABASE_NAME)
-            .child(FirebaseHelper.getIdUser())
-            .child(task.id)
-            .removeValue().addOnCompleteListener { result ->
-                if(result.isSuccessful) {
-                    Toast.makeText(requireContext(), "Tarefa removida com sucesso", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "Erro ao remover tarefa", Toast.LENGTH_SHORT).show()
-                }
-            }
     }
 
     private fun listTaskEmpty(tasks: List<Task>) {
@@ -172,6 +158,18 @@ class ToDoFragment : Fragment() {
 
             // Atualiza a tarefa pela posição do adapter
             taskAdapter.notifyItemChanged(position)
+        }
+
+        viewModel.taskDelete.observe(viewLifecycleOwner) { task ->
+            Toast.makeText(requireContext(),
+                getString(R.string.text_delete_task_success),
+                Toast.LENGTH_SHORT).show()
+
+            val oldList = taskAdapter.currentList
+            val newList = oldList.toMutableList().apply {
+                remove(task)
+            }
+            taskAdapter.submitList(newList)
         }
     }
 

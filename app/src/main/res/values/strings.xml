@@ -16,6 +16,7 @@
     <string name="text_accept_register">Conta criada com sucesso</string>
     <string name="text_accept_description">Tarefa salva com sucesso</string>
     <string name="text_edit_task_success">Tarefa editada com sucesso</string>
+    <string name="text_delete_task_success">Tarefa deletada com sucesso!</string>
     <string name="text_edit_task_toolbar">Editando Tarefa</string>">
     <string name="txt_bottom_login">Login</string>
     <string name="txt_criar_conta">Criar Conta</string>
@@ -50,6 +51,7 @@
     <string name="invalid_password_register_fragment">Senha inválida, tente novamente.</string>
     <string name="email_in_use_register_fragment">Este email já está em uso.</string>
     <string name="strong_password_register_fragment">Insira uma senha mais forte.</string>
+
 
 
 </resources>
