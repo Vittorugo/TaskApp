@@ -60,7 +60,7 @@ class DoingFragment : Fragment() {
         when (option) {
             TaskAdapter.SELECT_BACK -> {
                 task.status = Status.TODO
-                updateTask(task)
+                viewModel.updateTask(task)
             }
 
             TaskAdapter.SELECT_REMOVE -> {
@@ -85,7 +85,7 @@ class DoingFragment : Fragment() {
 
             TaskAdapter.SELECT_NEXT -> {
                 task.status = Status.DONE
-                updateTask(task)
+                viewModel.updateTask(task)
             }
         }
     }
@@ -134,41 +134,26 @@ class DoingFragment : Fragment() {
 
             when (stateView) {
                 is StateView.OnLoading -> {
-                    Toast.makeText(requireContext(),
-                        "Carregando tarefas...",
-                        Toast.LENGTH_SHORT).show()
+                    //TODO("FALTA IMPLEMENTAR O PROGRESSBAR")
                 }
 
                 is StateView.OnSuccess -> {
-
-                    // Armazena a lista atual do adapter
                     val oldList = taskAdapter.currentList
-
-                    // Gera uma nova lista a partir da lista antiga já com a tarefa atualizada
                     val newList = oldList.toMutableList().apply {
-                        if(!oldList.contains(stateView.data) && stateView.data?.status == Status.DOING) {
-                            add(0, stateView.data)
-                            binding.rvTasks.smoothScrollToPosition(0)
-                        }
-
-                        // Condição para validar se o usuario alterou apenas a descrição da tarefa ou o status tbm.
-                        // Caso tenha alterado o status, remove a tarefa da lista
-                        if(stateView.data?.status == Status.DOING) {
-                            find { it.id == stateView.data.id }?.description = stateView.data.description
+                        if (stateView.data?.status == Status.DOING) {
+                            val index = oldList.indexOfFirst { it.id == stateView.data.id }
+                            if (index == -1) {
+                                add(0, stateView.data)
+                                binding.rvTasks.smoothScrollToPosition(0)
+                            } else {
+                                set(index, stateView.data)
+                            }
                         } else {
                             remove(stateView.data)
                         }
                     }
-
-                    // Armazena a posição da tarefa a ser atualziada na lista
-                    val position = oldList.indexOfFirst { it.id == stateView.data?.id }
-
-                    // Envia a lista atualizada para o adapter
                     listTaskEmpty(newList)
                     taskAdapter.submitList(newList)
-
-                    // Atualiza a tarefa pela posição do adapter
-                    taskAdapter.notifyItemChanged(position)
                 }
 
                 is StateView.OnError -> {
@@ -182,9 +167,7 @@ class DoingFragment : Fragment() {
         viewModel.taskDelete.observe(viewLifecycleOwner) { stateView ->
             when (stateView) {
                 is StateView.OnLoading -> {
-                    Toast.makeText(requireContext(),
-                        "Carregando tarefas...",
-                        Toast.LENGTH_SHORT).show()
+                    //TODO("FALTA IMPLEMENTAR O PROGRESSBAR")
                 }
 
                 is StateView.OnSuccess -> {
@@ -208,10 +191,6 @@ class DoingFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun updateTask(task: Task) {
-        viewModel.updateTask(task)
     }
 
     override fun onDestroy() {

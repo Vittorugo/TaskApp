@@ -105,12 +105,11 @@ class DoneFragment : Fragment() {
 
             when(stateView) {
                 is StateView.OnLoading -> {
-                    Toast.makeText(requireContext(),
-                        "Carregando tarefas...",
-                        Toast.LENGTH_SHORT).show()
+                    binding.progressBar.isVisible = true
                 }
 
                 is StateView.OnSuccess -> {
+                    binding.progressBar.isVisible = false
                     val tasks = stateView.data?.filter { it.status == Status.DONE } ?: emptyList()
 
                     listTaskEmpty(tasks)
@@ -131,13 +130,11 @@ class DoneFragment : Fragment() {
 
             when (stateView) {
                 is StateView.OnLoading -> {
-                    Toast.makeText(requireContext(),
-                        "Carregando tarefas...",
-                        Toast.LENGTH_SHORT).show()
+                    binding.progressBar.isVisible = true
                 }
 
                 is StateView.OnSuccess -> {
-
+                    binding.progressBar.isVisible = false
                     // Armazena a lista atual do adapter
                     val oldList = taskAdapter.currentList
 
@@ -179,12 +176,11 @@ class DoneFragment : Fragment() {
         viewModel.taskDelete.observe(viewLifecycleOwner) { stateView ->
             when (stateView) {
                 is StateView.OnLoading -> {
-                    Toast.makeText(requireContext(),
-                        "Carregando tarefas...",
-                        Toast.LENGTH_SHORT).show()
+                    binding.progressBar.isVisible = true
                 }
 
                 is StateView.OnSuccess -> {
+                    binding.progressBar.isVisible = false
                     Toast.makeText(requireContext(),
                         getString(R.string.text_delete_task_success),
                         Toast.LENGTH_SHORT).show()

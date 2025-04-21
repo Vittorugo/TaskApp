@@ -1,5 +1,6 @@
 package com.livrokotlin.taskapp.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -67,6 +68,7 @@ class TaskAdapter(
             }
 
             Status.DOING -> {
+                Log.d("TaskAdapter", "setIndicators: DOING")
                 holder.binding.btnBack.setColorFilter(
                     ContextCompat.getColor(holder.itemView.context, R.color.color_delete))
                 holder.binding.btnNext.setColorFilter(
