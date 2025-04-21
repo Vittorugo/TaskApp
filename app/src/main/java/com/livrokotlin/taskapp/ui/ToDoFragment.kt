@@ -1,6 +1,7 @@
 package com.livrokotlin.taskapp.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import com.livrokotlin.taskapp.data.model.Status
 import com.livrokotlin.taskapp.data.model.Task
 import com.livrokotlin.taskapp.databinding.FragmentToDoBinding
 import com.livrokotlin.taskapp.ui.adapter.TaskAdapter
-import com.livrokotlin.taskapp.util.FirebaseHelper
 import com.livrokotlin.taskapp.util.StateView
 import com.livrokotlin.taskapp.util.showBottomSheet
 
@@ -43,7 +43,7 @@ class ToDoFragment : Fragment() {
         addNewTask()
         initRecyclerViewTask()
         observeViewModel()
-        viewModel.getTasks(Status.TODO)
+        viewModel.getTasks()
     }
 
     private fun initRecyclerViewTask() {
@@ -122,9 +122,11 @@ class ToDoFragment : Fragment() {
                 }
 
                 is StateView.OnSuccess -> {
+                    Log.i("TODOFRAGMENT", "observeViewModel: ${stateView.data}")
                     binding.progressBar.isVisible = false
-                    val tasks = stateView.data ?: emptyList()
+                    val tasks = stateView.data?.filter { it.status == Status.TODO } ?: emptyList()
 
+                    Log.i("TODOFRAGMENT", "Lista: ${tasks}")
                     listTaskEmpty(tasks)
 
                     taskAdapter.submitList(tasks)
@@ -191,6 +193,11 @@ class ToDoFragment : Fragment() {
 
                     // Gera uma nova lista a partir da lista antiga já com a tarefa atualizada
                     val newList = oldList.toMutableList().apply {
+                        if(!oldList.contains(stateView.data) && stateView.data?.status == Status.TODO) {
+                            add(0, stateView.data)
+                            binding.rvTasks.smoothScrollToPosition(0)
+                        }
+
                         // Condição para validar se o usuario alterou apenas a descrição da tarefa ou o status tbm.
                         // Caso tenha alterado o status, remove a tarefa da lista
                         if(stateView.data?.status == Status.TODO) {
@@ -204,6 +211,7 @@ class ToDoFragment : Fragment() {
                     val position = oldList.indexOfFirst { it.id == stateView.data?.id }
 
                     // Envia a lista atualizada para o adapter
+                    listTaskEmpty(newList)
                     taskAdapter.submitList(newList)
 
                     // Atualiza a tarefa pela posição do adapter
@@ -227,6 +235,8 @@ class ToDoFragment : Fragment() {
                 }
 
                 is StateView.OnSuccess -> {
+                    binding.progressBar.isVisible = false
+
                     Toast.makeText(requireContext(),
                         getString(R.string.text_delete_task_success),
                         Toast.LENGTH_SHORT).show()
@@ -235,6 +245,8 @@ class ToDoFragment : Fragment() {
                     val newList = oldList.toMutableList().apply {
                         remove(stateView.data)
                     }
+
+                    listTaskEmpty(newList)
                     taskAdapter.submitList(newList)
                 }
 

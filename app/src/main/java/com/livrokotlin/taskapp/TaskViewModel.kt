@@ -26,7 +26,7 @@ class TaskViewModel : ViewModel() {
     private val _taskDelete = MutableLiveData<StateView<Task>>()
     val taskDelete: LiveData<StateView<Task>> = _taskDelete
 
-    fun getTasks(status: Status) {
+    fun getTasks() {
         try {
             _taskList.postValue(StateView.OnLoading())
 
@@ -40,8 +40,7 @@ class TaskViewModel : ViewModel() {
                         for ( dataSnapshot in snapshot.children) {
                             Log.d("FirebaseData", "DataSnapshot: ${dataSnapshot.getValue(Task::class.java) as Task}")
                             val task = dataSnapshot.getValue(Task::class.java) as Task
-                            if(task.status == status)
-                                tasks.add(task)
+                            tasks.add(task)
                         }
 
                         tasks.reverse()
